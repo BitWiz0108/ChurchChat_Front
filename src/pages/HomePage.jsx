@@ -1,12 +1,9 @@
-import Header from "../components/Header";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-// import HomeIcon from "@mui/icons-material/homeicon"
+import HeaderComp from "../components/HeaderComp";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { chatCompletion } from "../api/chat.api";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Stack, Box, Typography, IconButton, FormControl, OutlinedInput, CircularProgress } from "@mui/material";
+import { Stack, Box, FormControl, OutlinedInput, CircularProgress } from "@mui/material";
 import TypewriterComp  from "../components/TypeWriterComp";
 
 
@@ -15,22 +12,8 @@ const messageType = {
   question: "question"
 };
 
-const options_1 = [
-  { label: "Grapes 🍇", value: "grapes" },
-  { label: "Mango 🥭", value: "mango" },
-  { label: "Strawberry 🍓", value: "strawberry" },
-  { label: "Watermelon 🍉", value: "watermelon" },
-  { label: "Pear 🍐", value: "pear", disabled: true },
-  { label: "Apple 🍎", value: "apple" },
-  { label: "Tangerine 🍊", value: "tangerine" },
-  { label: "Pineapple 🍍", value: "pineapple" },
-  { label: "Peach 🍑", value: "peach" }
-];
-
 const HomePage = () => {
-  const username = localStorage.getItem("username");
 
-  const navigate = useNavigate();
   const inputRef = useRef();
   const chatWrapperRef = useRef();
 
@@ -48,10 +31,8 @@ const HomePage = () => {
 
     setMessages(newMessages);
     setQuestion("");
-    // setOnRequest(true);
 
     const { response, err } = await chatCompletion({ prompt: question });
-    console.log("RT", response.text);
     if (response) {
       setMessages([...newMessages, {
         type: messageType.answer,
@@ -68,20 +49,6 @@ const HomePage = () => {
   const onEnterPress = (e) => {
     if (e.keyCode === 13) getAnswer();
   };
-
-  const onSignOut = () => {
-    localStorage.removeItem("tkn");
-    navigate("/signin");
-  };
-
-  const onGoDashboard = () => {
-    navigate("/dashboard");
-  };
-
-  const onGoSettings = () => {
-    navigate("/settings");
-  }
-
   useEffect(() => {
     setTimeout(() => {
       chatWrapperRef.current.addEventListener("DOMNodeInserted", e => {
@@ -95,23 +62,7 @@ const HomePage = () => {
 
   return (
     <Stack alignItems="center" justifyContent="space-between" sx={{ height: "100%" }} >
-      <Header bg borderBottom>
-        <Box sx={{ width: "100%", height: "100%", position: "relative", paddingX: 2, maxWidth: "md" }}>
-          <Typography variant="h6" fontWeight="700" sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-            {username}
-          </Typography>
-          <IconButton onClick={onSignOut} sx={{ position: "absolute", top: "50%", right: "16px", transform: "translateY(-50%)" }} >
-            <LogoutOutlinedIcon />
-          </IconButton>
-          <IconButton onClick={onGoDashboard} sx={{ position: "absolute", top: "50%", right: "150px", transform: "translateY(-50%)" }} >
-            Dashboard
-          </IconButton>
-          <IconButton onClick={onGoSettings} sx={{ position: "absolute", top: "50%", right: "50px", transform: "translateY(-50%)" }} >
-            Settings
-          </IconButton>
-        </Box>
-      </Header>
-
+      <HeaderComp></HeaderComp>
       <Box ref={chatWrapperRef} sx={{ height: "100%", position: "fixed", zIndex: 1, maxWidth: "md", width: "100%", overflowY: "auto", paddingTop: "60px", paddingBottom: "90px", "&::-webkit-scrollbar": { width: "0px" } }}>
         <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", maxWidth: "md", width: "100%" }}>
           {messages.map((item, index) => (
@@ -120,19 +71,6 @@ const HomePage = () => {
                 {index === messages.length - 1 ? (
                   item.type === messageType.answer ? (
                     <TypewriterComp text={item.content}></TypewriterComp>
-                    // <TypeWriter onInit={(writer) => {
-                    //   writer.typeString(item.content)
-                    //     .callFunction(() => {
-                    //       document.querySelector(".Typewriter__cursor").style.display = "none";
-                    //       setOnRequest(false);
-                    //       setTimeout(() => {
-                    //         inputRef.current.focus();
-                    //       }, 200);
-                    //     })
-                    //     // .changeDelay(10)
-                    //     // .typeSpeed(50) // Decrease the typing speed
-                    //     .start();
-                    // }} />
                   ) : item.content
                 ) : (
                   item.content

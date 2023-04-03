@@ -9,3 +9,4 @@ export const chatCompletion = async ({ prompt }) => {
     return { err };
   }
 };
+

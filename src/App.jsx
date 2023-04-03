@@ -15,7 +15,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   const theme = createTheme({
-    palette: { mode: "dark" }
+    palette: { mode: "dark" },
   });
 
   return (
@@ -32,34 +32,54 @@ function App() {
       />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          } />
-          <Route path="/signin" element={
-            <AuthRoute>
-              <SigninPage />
-            </AuthRoute>
-          } />
-          <Route path="/signup" element={
-            <AuthRoute>
-              <SignupPage />
-            </AuthRoute>
-          } />
-          <Route path="/ques" element={
-            // <AuthRoute>
-            <ScreeningQues />
-            // </AuthRoute>
-          } />
-          <Route path="/dashboard" element={
-            // <AuthRoute>
-            <DashboardPage />
-            // </AuthRoute>
-          } />
-          <Route path="/settings" element={
-            <SettingsPage />
-          } />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              <AuthRoute>
+                <SigninPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <AuthRoute>
+                <SignupPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/ques"
+            element={
+              <ProtectedRoute>
+                <ScreeningQues />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { userSignIn } from "../api/user.api";
 import { useState } from "react";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Stack, TextField } from "@mui/material";
 
 const SigninPage = () => {
   const navigate = useNavigate();
@@ -31,18 +31,21 @@ const SigninPage = () => {
     setIsRequest(false);
     if (response) {
       localStorage.setItem("tkn", response.token);
-      console.log("SIgnin Data:", response);
-      var prompt =
-        "Please ignore our previous conversation and let us start a fresh conversation. Imagine you are a " +
-        response.job +
-        ", not an AI language model. So please answer as if you are a " +
-        response.job +
-        ". Your Theological Distinctives are " +
-        response.distinctive +
-        ". Your favorite writers are " +
-        response.writer +
-        " . So ";
+      console.log("This is the response:", response);
+      localStorage.setItem("user_base_prompt", response.base_prompt);
+      localStorage.setItem("user_job", response.job);
+      localStorage.setItem("user_distinctive", response.distinctive);
+      localStorage.setItem("user_writer", response.writer);
+
+      var prompt = response.base_prompt + 
+      "You are a " + 
+      response.job + 
+      " and your theoretical distinctives are " + 
+      response.distinctive + 
+      ", and your favoirte writers are "+ 
+      response.writer + ". ";
       localStorage.setItem("basePrompt", prompt);
+      localStorage.setItem("userrole", response.role);
       navigate("/");
     }
     if (err) toast.error(err.message);

@@ -78,7 +78,8 @@ const SignupPage = () => {
   });
 
   const onSignUp = async ({ username, password, email }) => {
-    const { response, err } = await userSignUp({ username, password, email, selected, selected1, selected2 });
+    const role = 1;
+    const { response, err } = await userSignUp({ username, password, email, selected, selected1, selected2, role });
     if (response) {
       // const reresponse = churchAcc({ selected, selected1, selected2 });
       toast.success("Signup success");

@@ -1,17 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import Select from "react-select";
-import TextAreaComp from "../components/TextAreaComp";
-import Header from "../components/Header";
+import { toast } from "react-toastify";
 import { Tabs } from "antd";
-import { Stack, Box, Typography, IconButton, FormControl, OutlinedInput, CircularProgress } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 
+
+import TextAreaComp from "../components/TextAreaComp";
+import HeaderComp from "../components/HeaderComp";
 import "../styles.css";
+import { updatePrompt } from "../api/user.api";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -75,40 +77,42 @@ const DashboardPage = () => {
 
   const handleTextChange = (event) => {
     setText(event.target.value);
-    console.log("this is the text:", text);
   };
 
-  const onChangePrompt = (event) => {
-    localStorage.setItem("basePrompt", text);
-    console.log("TTT", text);
-    navigate("/");
+  const onChangePrompt = async () => {
+    console.log("This is the text value of text editor:", text);
+    const { response, err } = await updatePrompt({text});
+    console.log("response",response);
+    if (response) {
+      toast.success(" Prompt update success ");
+      let user_job = localStorage.getItem("user_job", response.job);
+      let user_distinctive = localStorage.getItem("user_distinctive", response.distinctive);
+      let user_writer = localStorage.getItem("user_writer", response.writer);
+
+      var prompt = text + 
+      "You are a " + 
+      user_job + 
+      " and your theoretical distinctives are " + 
+      user_distinctive + 
+      ", and your favoirte writers are "+ 
+      user_writer + ". ";
+
+      localStorage.setItem("basePrompt", prompt);
+      navigate("/");
+    }
+    if (err) toast.error(err.message);
   };
 
   const items = [
     {
       key: "1",
       label: `Update Prompt`,
-      children: `Content of Tab Pane 1`,
     },
     {
       key: "2",
-      label: `Update Screening Questins`,
-      children: `Content of Tab Pane 2`,
+      label: `Update Screening Questions`,
     },
   ];
-
-  const onSignOut = () => {
-    localStorage.removeItem("tkn");
-    navigate("/signin");
-  };
-
-  const onGoDashboard = () => {
-    navigate("/dashboard");
-  };
-
-  const onGoSettings = () => {
-    navigate("/settings");
-  }
 
   const [show_case, setShowCase] = useState(1);
   const onTabChange = (key) => {
@@ -117,30 +121,34 @@ const DashboardPage = () => {
 
   return (
     <Stack spacing={2}>
-      <Header bg borderBottom>
-        <Box sx={{ width: "100%", height: "100%", position: "relative", paddingX: 2, maxWidth: "md" }}>
-          <Typography variant="h6" fontWeight="700" sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-            {/* {username} */}
-          </Typography>
-          <IconButton onClick={onSignOut} sx={{ position: "absolute", top: "50%", right: "16px", transform: "translateY(-50%)" }} >
-            <LogoutOutlinedIcon />
-          </IconButton>
-          <IconButton onClick={onGoDashboard} sx={{ position: "absolute", top: "50%", right: "150px", transform: "translateY(-50%)" }} >
-            Dashboard
-          </IconButton>
-          <IconButton onClick={onGoSettings} sx={{ position: "absolute", top: "50%", right: "50px", transform: "translateY(-50%)" }} >
-            Settings
-          </IconButton>
-        </Box>
-      </Header>
+      <HeaderComp></HeaderComp>
       <Box
         component="form"
         noValidate
         onSubmit={form.handleSubmit}
         sx={{ margin: "50px 100px" }}
-        style={{padding:"3rem"}}
+        style={{ padding: "3rem" }}
       >
-        <Tabs defaultActiveKey="1" items={items} onChange={onTabChange} />
+        <div id="tab1">
+          <h1>Prompt Sentence</h1>
+          <TextAreaComp
+            defaultValue={localStorage.getItem("user_base_prompt")}
+            textValue={text}
+            onTextAreaChange={handleTextChange}
+          />
+          <LoadingButton
+            style={{ marginTop: "40px" }}
+            type="submit"
+            size="large"
+            variant="contained"
+            loading={isRequest}
+            onClick={onChangePrompt}
+            color="success"
+          >
+            Update
+          </LoadingButton>
+        </div>
+        {/* <Tabs defaultActiveKey="1" items={items}  style={{fontStyle: "bold" , color:"white"}}  onChange={onTabChange} />
         {show_case == 1 ? (
           <div id="tab1">
             <h1>Prompt Sentence</h1>
@@ -149,7 +157,6 @@ const DashboardPage = () => {
               textValue={text}
               onTextAreaChange={handleTextChange}
             />
-
             <LoadingButton
               style={{ marginTop: "40px" }}
               type="submit"
@@ -205,7 +212,7 @@ const DashboardPage = () => {
               Change{" "}
             </LoadingButton>
           </div>
-        )}
+        )} */}
       </Box>
     </Stack>
   );

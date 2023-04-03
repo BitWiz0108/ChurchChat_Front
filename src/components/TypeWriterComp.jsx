@@ -28,7 +28,7 @@ const TypewriterComp = ({ text }) => {
   return (
     <div>
       <span>{displayText}</span>
-      <button onClick={handleStopTyping}>Stop Generating</button>
+      {/* <button onClick={handleStopTyping}>Stop Generating</button> */}
     </div>
   );
 };

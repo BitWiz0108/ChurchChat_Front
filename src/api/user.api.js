@@ -1,7 +1,7 @@
 import axios from "axios";
 import axiosClient from "./axios.client";
 
-export const userSignUp = async ({ username, password, email, selected, selected1, selected2 }) => {
+export const userSignUp = async ({ username, password, email, selected, selected1, selected2, role }) => {
   try {
     let str1 = selected.value;
     let s_value2 = [];
@@ -17,7 +17,7 @@ export const userSignUp = async ({ username, password, email, selected, selected
     let str3 = s_value3.toString();
     const response = await axiosClient.post(
       "users/signup",
-      { username, password, email, str1, str2, str3 }
+      { username, password, email, str1, str2, str3, role }
     );
 
     return { response };
@@ -79,6 +79,17 @@ export const getAllAccounts = async () => {
 export const userCheckTkn = async () => {
   try {
     const response = await axiosClient.get("users/check-token");
+    return { response };
+  } catch (err) {
+    return { err };
+  }
+};
+
+
+export const updatePrompt = async ( text ) => {
+  console.log("!!!!!", text);
+  try {
+    const response = await axiosClient.post("users/updateBasePrompt", text);
     return { response };
   } catch (err) {
     return { err };

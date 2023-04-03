@@ -1,6 +1,7 @@
-import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
+
 import { userCheckTkn } from "../api/user.api";
 import Loading from "./Loading";
 
@@ -12,22 +13,17 @@ const ProtectedRoute = (props) => {
   useEffect(() => {
     const checkToken = async () => {
       setIsLoading(true);
-
       const { response, err } = await userCheckTkn();
-
       if (err) {
         localStorage.removeItem("tkn");
         navigate("/signin");
       }
-
       if (response) {
         localStorage.setItem("username", response.username);
         setIsLoading(false);
       }
     };
-
     const tkn = localStorage.getItem("tkn");
-
     if (tkn) checkToken();
     else navigate("/signin");
   }, [navigate]);
